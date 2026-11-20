@@ -1,0 +1,430 @@
+DC MOTOR
+
+int EN = 11;   // Enable pin to control motor speed
+int IN1 = 13;  // Input pin 1 to control motor direction
+int IN2 = 12;  // Input pin 2 to control motor direction
+
+void setup() {
+  // Set all motor driver pins as OUTPUT
+  pinMode(EN, OUTPUT);
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+}
+
+void loop() {
+
+  // Rotate the motor in Direction 1 (Clockwise)
+  digitalWrite(IN1, HIGH);  // Set IN1 HIGH
+  digitalWrite(IN2, LOW);   // Set IN2 LOW
+  analogWrite(EN, 255);      // Turn ON motor at full speed
+
+  delay(3000);              // Run motor for 3 seconds
+
+  // Stop the motor
+  analogWrite(EN, 0);        // Set motor speed to zero
+
+  delay(1000);              // Wait for 1 second
+
+  // Rotate the motor in Direction 2 (Anticlockwise)
+  digitalWrite(IN1, LOW);   // Set IN1 LOW
+  digitalWrite(IN2, HIGH);  // Set IN2 HIGH
+  analogWrite(EN, 255);     // Turn ON motor at full speed
+
+  delay(3000);              // Run motor for 3 seconds
+
+  // Stop the motor
+  analogWrite(EN, 0);       // Set motor speed to zero
+
+  delay(1000);              // Wait for 1 second
+}
+
+
+ULTRASONIC 
+
+const int sensorPin = 9;  // Ultrasonic sensor SIG pin connected to pin 9
+const int ledPin = 5;     // LED connected to PWM pin 5
+
+long duration;       // Stores the time taken by ultrasonic sound
+float distance;      // Stores the calculated distance in cm
+int brightness;      // Stores the LED brightness value
+
+void setup()
+{
+  // Set sensor and LED pins
+  pinMode(sensorPin, OUTPUT);
+  pinMode(ledPin, OUTPUT);
+
+  // Start serial communication at 9600 baud rate
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  // Send ultrasonic trigger pulse
+  pinMode(sensorPin, OUTPUT);  // Set sensor pin as OUTPUT
+  digitalWrite(sensorPin, LOW); // Keep signal LOW
+  delayMicroseconds(2);         // Wait for 2 microseconds
+
+  digitalWrite(sensorPin, HIGH); // Send HIGH trigger signal
+  delayMicroseconds(10);        // Keep HIGH for 10 microseconds
+  digitalWrite(sensorPin, LOW);  // Stop trigger pulse
+
+  // Change sensor pin to INPUT to receive echo signal
+  pinMode(sensorPin, INPUT);
+
+  // Measure the time taken by the echo signal
+  duration = pulseIn(sensorPin, HIGH);
+
+  // Calculate distance in centimetres
+  distance = duration * 0.0343 / 2;
+
+  // Limit the measured distance between 10 cm and 100 cm
+  distance = constrain(distance, 10, 100);
+
+  // Convert distance into LED brightness
+  // Near object = Bright LED, Far object = Dim LED
+  brightness = map(distance, 10, 100, 255, 0);
+
+  // Control LED brightness using PWM
+  analogWrite(ledPin, brightness);
+
+  // Display distance and brightness on Serial Monitor
+  Serial.print("Distance: ");
+  Serial.print(distance);
+  Serial.print(" cm, Brightness: ");
+  Serial.println(brightness);
+
+  // Wait for 200 milliseconds before repeating
+  delay(200);
+}
+
+GAS 
+
+const int sensorPin = 9;  // Ultrasonic sensor SIG pin connected to pin 9
+const int ledPin = 5;     // LED connected to PWM pin 5
+
+long duration;       // Stores the time taken by ultrasonic sound
+float distance;      // Stores the calculated distance in cm
+int brightness;      // Stores the LED brightness value
+
+void setup()
+{
+  // Set sensor and LED pins
+  pinMode(sensorPin, OUTPUT);
+  pinMode(ledPin, OUTPUT);
+
+  // Start serial communication at 9600 baud rate
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  // Send ultrasonic trigger pulse
+  pinMode(sensorPin, OUTPUT);  // Set sensor pin as OUTPUT
+  digitalWrite(sensorPin, LOW); // Keep signal LOW
+  delayMicroseconds(2);         // Wait for 2 microseconds
+
+  digitalWrite(sensorPin, HIGH); // Send HIGH trigger signal
+  delayMicroseconds(10);        // Keep HIGH for 10 microseconds
+  digitalWrite(sensorPin, LOW);  // Stop trigger pulse
+
+  // Change sensor pin to INPUT to receive echo signal
+  pinMode(sensorPin, INPUT);
+
+  // Measure the time taken by the echo signal
+  duration = pulseIn(sensorPin, HIGH);
+
+  // Calculate distance in centimetres
+  distance = duration * 0.0343 / 2;
+
+  // Limit the measured distance between 10 cm and 100 cm
+  distance = constrain(distance, 10, 100);
+
+  // Convert distance into LED brightness
+  // Near object = Bright LED, Far object = Dim LED
+  brightness = map(distance, 10, 100, 255, 0);
+
+  // Control LED brightness using PWM
+  analogWrite(ledPin, brightness);
+
+  // Display distance and brightness on Serial Monitor
+  Serial.print("Distance: ");
+  Serial.print(distance);
+  Serial.print(" cm, Brightness: ");
+  Serial.println(brightness);
+
+  // Wait for 200 milliseconds before repeating
+  delay(200);
+}
+
+SERVOMOTOR 
+
+#include <Servo.h>
+
+// Create a servo motor object
+Servo myServo;
+
+// Define potentiometer pin
+int potPin = A0;  // Potentiometer connected to analog pin A0
+
+// Declare variables
+int potValue;  // Stores potentiometer reading
+int angle;     // Stores servo motor angle
+
+void setup() {
+  // Connect servo motor signal wire to digital pin 9
+  myServo.attach(9);
+
+  // Start serial communication at 9600 baud rate
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Read analog value from potentiometer (0 to 1023)
+  potValue = analogRead(potPin);
+
+  // Convert potentiometer value into servo angle (0 to 180 degrees)
+  angle = map(potValue, 0, 1023, 0, 180);
+
+  // Rotate servo motor to the calculated angle
+  myServo.write(angle);
+
+  // Display potentiometer value on Serial Monitor
+  Serial.print("Potentiometer Value: ");
+  Serial.print(potValue);
+
+  // Display servo motor angle on Serial Monitor
+  Serial.print("   Servo Angle: ");
+  Serial.println(angle);
+
+  // Wait for 100 milliseconds before repeating
+  delay(100);
+}
+
+RELAY 
+
+const int relayPin = 11;  // Relay connected to digital pin 11
+
+void setup() {
+  // Set relay pin as OUTPUT
+  pinMode(relayPin, OUTPUT);
+}
+
+void loop() {
+  // Turn ON the relay
+  digitalWrite(relayPin, HIGH);
+  delay(2000);  // Wait for 2 seconds
+
+  // Turn OFF the relay
+  digitalWrite(relayPin, LOW);
+  delay(2000);  // Wait for 2 seconds
+}
+
+POTENTIOMETOR
+
+int potPin = A0;  // Potentiometer connected to analog pin A0
+int ledPin = 9;   // LED connected to PWM pin 9
+
+void setup() {
+  // Set LED pin as OUTPUT
+  pinMode(ledPin, OUTPUT);
+
+  // Set potentiometer pin as INPUT
+  pinMode(potPin, INPUT);
+
+  // Start serial communication at 9600 baud rate
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Read analog value from potentiometer (0 to 1023)
+  int potValue = analogRead(potPin);
+
+  // Convert potentiometer value (0-1023) into LED brightness (0-255)
+  int ledBrightness = map(potValue, 0, 1023, 0, 255);
+
+  // Control LED brightness using PWM
+  analogWrite(ledPin, ledBrightness);
+
+  // Display potentiometer reading on Serial Monitor
+  Serial.println(potValue);
+
+  // Wait for 500 milliseconds before repeating
+  delay(500);
+}
+
+
+PHOTORESISTOR
+
+int ldr = A0;  // LDR sensor connected to analog pin A0
+int led = 9;   // LED connected to digital pin 9
+int value;     // Variable to store LDR sensor reading
+
+void setup() {
+  // Set LED pin as OUTPUT
+  pinMode(led, OUTPUT);
+
+  // Start serial communication at 9600 baud rate
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Read the light intensity value from LDR sensor
+  value = analogRead(ldr);
+
+  // Display LDR sensor value on Serial Monitor
+  Serial.println(value);
+
+  // Check whether the surrounding area is dark
+  if (value < 500) {
+    digitalWrite(led, HIGH);  // Turn ON LED in darkness
+  } else {
+    digitalWrite(led, LOW);   // Turn OFF LED in bright light
+  }
+
+  // Wait for 200 milliseconds before checking again
+  delay(200);
+}
+
+
+PIR SENSOR 
+
+const int pirPin = 2;  // PIR sensor output connected to pin 2
+const int ledPin = 13; // LED connected to pin 13
+
+void setup() {
+  // Set PIR sensor pin as INPUT
+  pinMode(pirPin, INPUT);
+
+  // Set LED pin as OUTPUT
+  pinMode(ledPin, OUTPUT);
+
+  // Start serial communication at 9600 baud rate
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Read the PIR sensor value
+  int motion = digitalRead(pirPin);
+
+  // Check whether motion is detected
+  if (motion == HIGH) {
+    digitalWrite(ledPin, HIGH);       // Turn ON LED
+    Serial.println("Motion Detected!"); // Display motion detected message
+  } 
+  else {
+    digitalWrite(ledPin, LOW);        // Turn OFF LED
+    Serial.println("No Motion");      // Display no motion message
+  }
+
+  // Wait for 100 milliseconds before checking again
+  delay(100);
+}
+
+TEMPERATURE
+const int LM35 = A0;  // LM35 sensor connected to analog pin A0
+
+
+const int greenLED = 3;   // Green LED connected to pin 3
+const int yellowLED = 2;  // Yellow LED connected to pin 2
+const int redLED = 1;     // Red LED connected to pin 1
+
+void setup()
+{
+  // Set all LED pins as OUTPUT
+  pinMode(greenLED, OUTPUT);
+  pinMode(yellowLED, OUTPUT);
+  pinMode(redLED, OUTPUT);
+
+  // Start serial communication at 9600 baud rate
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  // Read temperature sensor analog value
+  int sensorValue = analogRead(LM35);
+
+  // Convert analog reading into voltage
+  float voltage = sensorValue * (5.0 / 1023.0);
+
+  // Convert voltage into temperature in Celsius
+  // LM35 gives 10 mV voltage for every 1°C
+  float temperature = voltage * 100.0;
+
+  // Display temperature on Serial Monitor
+  Serial.print("Temperature: ");
+  Serial.print(temperature);
+  Serial.println(" °C");
+
+  // Turn OFF all LEDs before checking temperature
+  digitalWrite(greenLED, LOW);
+  digitalWrite(yellowLED, LOW);
+  digitalWrite(redLED, LOW);
+
+  // Check temperature and turn ON the appropriate LED
+  if (temperature < 25)
+  {
+    digitalWrite(greenLED, HIGH);  // Green LED ON for low temperature
+  }
+  else if (temperature <= 35)
+  {
+    digitalWrite(yellowLED, HIGH); // Yellow LED ON for medium temperature
+  }
+  else
+  {
+    digitalWrite(redLED, HIGH);    // Red LED ON for high temperature
+  }
+}
+
+2 SEC LED 
+
+void setup() {
+  pinMode(13, OUTPUT);
+  pinMode(9, OUTPUT);
+}
+
+void loop() {
+  digitalWrite(13, HIGH);
+  digitalWrite(9, LOW);
+  delay(2000);
+
+  digitalWrite(13, LOW);
+  digitalWrite(9, HIGH);
+  delay(2000);
+}
+
+LED 
+
+void setup()
+{
+  pinMode(13, OUTPUT);
+}
+
+void loop()
+{
+  digitalWrite(13, HIGH);
+  delay(2000); // Wait for 2000 milliseconds
+  digitalWrite(13, LOW);
+  delay(2000); // Wait for 2000 milliseconds
+}
+
+SWITCH 
+
+int button = 2;
+int led = 13;
+
+void setup() {
+  pinMode(button, INPUT);
+  pinMode(led, OUTPUT);
+}
+
+void loop() {
+  if (digitalRead(button) == HIGH) {
+    digitalWrite(led, HIGH);
+  }
+  else {
+    digitalWrite(led, LOW);
+  }
+}
+
